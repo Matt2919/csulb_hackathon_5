@@ -1,16 +1,20 @@
 import cv2
 import mediapipe as mp
-
-import discord
-import asyncio
-import threading
-
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 mp_face_detection = mp.solutions.face_detection
 
+##stuff for cry cry and nya nya
 prev = -1
+prevr = -1
+prevl = -1
+prevr2 = -1
+prevl2 = -1
+lm1 = lm2 = lm3 = lm4 = None
+rm1 = rm2 = rm3 = rm4 = None
+
+
 cap = cv2.VideoCapture(0)
 with mp_face_detection.FaceDetection(
         model_selection=0, min_detection_confidence=0.5) as face_detection, \
@@ -35,32 +39,41 @@ with mp_face_detection.FaceDetection(
     # Draw the hand annotations on the image.
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    did67 = -1
-    if results.multi_hand_landmarks and results.multi_handedness:
-        for hand_landmarks, handedness in zip(
-                results.multi_hand_landmarks, results.multi_handedness):
-            did67 = did67 - 1
+    ##detect for cry cry emote
+    if results.multi_hand_landmarks and len(results.multi_hand_landmarks) >= 2:
+        # Separate left and right hands
+        right_hand = None
+        left_hand = None
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
             if handedness.classification[0].label == "Right":
-                rm = hand_landmarks.landmark[9]
-            # Check for right hand
-            if handedness.classification[0].label == "Left":
-                #print("Right hand landmarks:")
-                lm = hand_landmarks.landmark[9]
-                if prev ==-1:
-                    prev = lm.y
-                if prev != -1:
-                    if abs(lm.y - prev) > 0.05:
-                        #print ("right", rm.y, "left",lm.y)
-                        if abs(rm.y - lm.y) > 0.05:
-                            print("SIX SEVEN")
-                            did67 = 3
-                        #exit()
-                    else:
-                        if did67 >0:
-                            print("SIX SEVEN")
-                        else :
-                            print("no")
-                    prev = lm.y
+                right_hand = hand_landmarks
+            elif handedness.classification[0].label == "Left":
+                left_hand = hand_landmarks
+
+        if right_hand and left_hand:
+            # --- Cry cry check ---
+            r = [right_hand.landmark[i] for i in [17, 18, 19, 20]]
+            l = [left_hand.landmark[i] for i in [17, 18, 19, 20]]
+            if all(abs(r[i].z - r[i + 1].z) < 0.008 for i in range(3)) and \
+                    all(abs(l[i].z - l[i + 1].z) < 0.008 for i in range(3)):
+                if prevr == -1:
+                    prevr, prevl = r[1].x, l[1].x
+                else:
+                    if abs(prevr - r[1].x) > 0.008 and abs(prevl - l[1].x) > 0.008:
+                        print("Cry cry")
+                        prevr, prevl = r[1].x, l[1].x
+
+            # --- Nya nya check ---
+            r = [right_hand.landmark[i] for i in [5, 9, 13, 17]]
+            l = [left_hand.landmark[i] for i in [5, 9, 13, 17]]
+            if all(abs(r[i].z - r[i + 1].z) < 0.008 for i in range(3)) and \
+                    all(abs(l[i].z - l[i + 1].z) < 0.008 for i in range(3)):
+                if prevr2 == -1:
+                    prevr2, prevl2 = r[1].x, l[1].x
+                else:
+                    if abs(prevr2 - r[1].x) > 0.008 and abs(prevl2 - l[1].x) > 0.008:
+                        print("Nya nya")
+                        prevr2, prevl2 = r[1].x, l[1].x
 
                 #print(f"Landmark: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
     if results.multi_hand_landmarks:

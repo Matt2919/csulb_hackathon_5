@@ -56,23 +56,24 @@ with mp_face_detection.FaceDetection(
 
             ##coding is my passion
                 ##this looks to see if the joints are in similar z axis spots
-                if (abs(rm1.z-rm2.z) <0.008):
-                    if abs(rm2.z-rm3.z) < 0.008:
-                        if abs(rm3.z-rm4.z) < 0.008:
-                            if (abs(lm1.z - lm2.z) < 0.008):
-                                if abs(lm2.z - lm3.z) < 0.008:
-                                    if abs(lm3.z - lm4.z) < 0.008:
-                                        #print("similar")
-                                        if prevr == -1:
-                                            prevr = rm2.x
-                                            prevl = lm2.x
-                                        else:
-                                            #print(prevr,rm2.x)
-                                            if abs(prevr - rm2.x) > 0.008:
-                                                if abs(prevl - lm2.x) > 0.008:
-                                                    print("Cry cry")
-                                                    prevr = rm2.x
-                                                    prevl = lm2.x
+                if all(v is not None for v in [rm1, rm2, rm3, rm4, lm1, lm2, lm3, lm4]):
+                  if (abs(rm1.z-rm2.z) <0.008):
+                        if abs(rm2.z-rm3.z) < 0.008:
+                            if abs(rm3.z-rm4.z) < 0.008:
+                                if (abs(lm1.z - lm2.z) < 0.008):
+                                    if abs(lm2.z - lm3.z) < 0.008:
+                                        if abs(lm3.z - lm4.z) < 0.008:
+                                            #print("similar")
+                                            if prevr == -1:
+                                                prevr = rm2.x
+                                                prevl = lm2.x
+                                            else:
+                                                #print(prevr,rm2.x)
+                                                if abs(prevr - rm2.x) > 0.008:
+                                                    if abs(prevl - lm2.x) > 0.008:
+                                                        print("Cry cry")
+                                                        prevr = rm2.x
+                                                        prevl = lm2.x
 
 
     #detect for nya nya, uses the same code as before, but like dif landmarks
@@ -90,23 +91,24 @@ with mp_face_detection.FaceDetection(
                     lm3 = hand_landmarks.landmark[13]
                     lm4 = hand_landmarks.landmark[17]
     #coding is my passion
-                if (abs(rm1.z - rm2.z) < 0.008):
-                    if abs(rm2.z - rm3.z) < 0.008:
-                        if abs(rm3.z - rm4.z) < 0.008:
-                            if (abs(lm1.z - lm2.z) < 0.008):
-                                if abs(lm2.z - lm3.z) < 0.008:
-                                    if abs(lm3.z - lm4.z) < 0.008:
-                                        # print("similar")
-                                        if prevr == -1:
-                                            prevr2 = rm2.x
-                                            prevl2 = lm2.x
-                                        else:
-                                            # print(prevr,rm2.x)
-                                            if abs(prevr2 - rm2.x) > 0.008:
-                                                if abs(prevl2 - lm2.x) > 0.008:
-                                                    print("nya nya")
-                                                    prevr2 = rm2.x
-                                                    prevl2 = lm2.x
+                if all(v is not None for v in [rm1, rm2, rm3, rm4, lm1, lm2, lm3, lm4]):
+                    if (abs(rm1.z - rm2.z) < 0.008):
+                        if abs(rm2.z - rm3.z) < 0.008:
+                            if abs(rm3.z - rm4.z) < 0.008:
+                                if (abs(lm1.z - lm2.z) < 0.008):
+                                    if abs(lm2.z - lm3.z) < 0.008:
+                                        if abs(lm3.z - lm4.z) < 0.008:
+                                            # print("similar")
+                                            if prevr == -1:
+                                                prevr2 = rm2.x
+                                                prevl2 = lm2.x
+                                            else:
+                                                # print(prevr,rm2.x)
+                                                if abs(prevr2 - rm2.x) > 0.008:
+                                                    if abs(prevl2 - lm2.x) > 0.008:
+                                                        print("nya nya")
+                                                        prevr2 = rm2.x
+                                                        prevl2 = lm2.x
 
 
 
