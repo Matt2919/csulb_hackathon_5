@@ -30,25 +30,31 @@ with mp_face_detection.FaceDetection(
     # Draw the hand annotations on the image.
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
+    did67 = -1
     if results.multi_hand_landmarks and results.multi_handedness:
         for hand_landmarks, handedness in zip(
                 results.multi_hand_landmarks, results.multi_handedness):
-
+            did67 = did67 - 1
+            if handedness.classification[0].label == "Right":
+                rm = hand_landmarks.landmark[9]
             # Check for right hand
-
             if handedness.classification[0].label == "Left":
                 #print("Right hand landmarks:")
                 lm = hand_landmarks.landmark[9]
                 if prev ==-1:
                     prev = lm.y
                 if prev != -1:
-                   # print ("prev",prev,"new", lm.y)
                     if abs(lm.y - prev) > 0.05:
-                        print("SIX SEVEN")
+                        #print ("right", rm.y, "left",lm.y)
+                        if abs(rm.y - lm.y) > 0.05:
+                            print("SIX SEVEN")
+                            did67 = 3
                         #exit()
                     else:
-                        print("no")
+                        if did67 >0:
+                            print("SIX SEVEN")
+                        else :
+                            print("no")
                     prev = lm.y
 
                 #print(f"Landmark: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
