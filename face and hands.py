@@ -114,11 +114,11 @@ with mp_face_detection.FaceDetection(
 
 
     ##67 stuff lol
-    did67 = -1
+    did67 = 1
     if results.multi_hand_landmarks and results.multi_handedness:
         for hand_landmarks, handedness in zip(
                 results.multi_hand_landmarks, results.multi_handedness):
-            did67 = did67 - 1
+            #did67 = did67 - 1
             if handedness.classification[0].label == "Right":
                 rm = hand_landmarks.landmark[9]
             # Check for right hand
@@ -132,7 +132,8 @@ with mp_face_detection.FaceDetection(
                         #print ("right", rm.y, "left",lm.y)
                         if abs(rm.y - lm.y) > 0.05:
                             print("SIX SEVEN")
-                            did67 = 3
+
+                            did67 = 40
                         #exit()
                     else:
                         if did67 >0:
@@ -150,7 +151,19 @@ with mp_face_detection.FaceDetection(
             mp_hands.HAND_CONNECTIONS,
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
-
+    if did67 >= 0:
+        image_height, image_width, _ = image.shape
+        cx, cy = int(rm.x * image_width), int(rm.y * image_height)
+        cv2.circle(image, (cx, cy), 5, (0, 255, 0), -1)
+        cv2.putText(
+            image,
+            f"67",  # text
+            (cx + 10, cy - 10),  # position offset from point
+            cv2.FONT_HERSHEY_SIMPLEX,
+            10,  # font scale
+            (255, 0, 0),  # color (B, G, R)
+            2  # thickness
+        )
     if results2.detections:
         for detection in results2.detections:
             mp_drawing.draw_detection(image, detection)
