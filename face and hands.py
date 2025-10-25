@@ -62,20 +62,20 @@ with mp_face_detection.FaceDetection(
             ##coding is my passion
                 ##this looks to see if the joints are in similar z axis spots
                 if all(v is not None for v in [rm1, rm2, rm3, rm4, lm1, lm2, lm3, lm4]):
-                  if (abs(rm1.z-rm2.z) <0.008):
-                        if abs(rm2.z-rm3.z) < 0.008:
-                            if abs(rm3.z-rm4.z) < 0.008:
-                                if (abs(lm1.z - lm2.z) < 0.008):
-                                    if abs(lm2.z - lm3.z) < 0.008:
-                                        if abs(lm3.z - lm4.z) < 0.008:
+                  if (abs(rm1.z-rm2.z) <0.006):
+                        if abs(rm2.z-rm3.z) < 0.006:
+                            if abs(rm3.z-rm4.z) < 0.006:
+                                if (abs(lm1.z - lm2.z) < 0.006):
+                                    if abs(lm2.z - lm3.z) < 0.006:
+                                        if abs(lm3.z - lm4.z) < 0.006:
                                             #print("similar")
                                             if prevr == -1:
                                                 prevr = rm2.x
                                                 prevl = lm2.x
                                             else:
                                                 #print(prevr,rm2.x)
-                                                if abs(prevr - rm2.x) > 0.008:
-                                                    if abs(prevl - lm2.x) > 0.008:
+                                                if abs(prevr - rm2.x) > 0.006:
+                                                    if abs(prevl - lm2.x) > 0.006:
                                                         print("Cry cry")
                                                         last = 1
                                                         didcry = 30
@@ -99,20 +99,20 @@ with mp_face_detection.FaceDetection(
                     lm4 = hand_landmarks.landmark[17]
     #coding is my passion
                 if all(v is not None for v in [rm1, rm2, rm3, rm4, lm1, lm2, lm3, lm4]):
-                    if (abs(rm1.z - rm2.z) < 0.008):
-                        if abs(rm2.z - rm3.z) < 0.008:
-                            if abs(rm3.z - rm4.z) < 0.008:
-                                if (abs(lm1.z - lm2.z) < 0.008):
-                                    if abs(lm2.z - lm3.z) < 0.008:
-                                        if abs(lm3.z - lm4.z) < 0.008:
+                    if (abs(rm1.z - rm2.z) < 0.006):
+                        if abs(rm2.z - rm3.z) < 0.006:
+                            if abs(rm3.z - rm4.z) < 0.006:
+                                if (abs(lm1.z - lm2.z) < 0.006):
+                                    if abs(lm2.z - lm3.z) < 0.006:
+                                        if abs(lm3.z - lm4.z) < 0.006:
                                             # print("similar")
                                             if prevr == -1:
                                                 prevr2 = rm2.z
                                                 prevl2 = lm2.z
                                             else:
                                                 # print(prevr,rm2.x)
-                                                if abs(prevr2 - rm2.z) > 0.008:
-                                                    if abs(prevl2 - lm2.z) > 0.008:
+                                                if abs(prevr2 - rm2.z) > 0.006:
+                                                    if abs(prevl2 - lm2.z) > 0.006:
                                                         didnya = 30
                                                         print("nya nya")
                                                         last = 2
@@ -171,7 +171,7 @@ with mp_face_detection.FaceDetection(
         text = "6"
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 6.0
-        thickness = 10
+        thickness = 15
 
         (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
         temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
@@ -197,7 +197,7 @@ with mp_face_detection.FaceDetection(
         text = "7"
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 6.0
-        thickness = 10
+        thickness = 15
 
         (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
         temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
