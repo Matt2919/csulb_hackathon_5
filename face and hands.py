@@ -14,6 +14,8 @@ prevr2 = -1
 prevl2 = -1
 did67 = -1
 didcry = -1
+didnya = -1
+last = -1
 lm1 = lm2 = lm3 = lm4 = None
 rm1 = rm2 = rm3 = rm4 = None
 
@@ -75,6 +77,7 @@ with mp_face_detection.FaceDetection(
                                                 if abs(prevr - rm2.x) > 0.008:
                                                     if abs(prevl - lm2.x) > 0.008:
                                                         print("Cry cry")
+                                                        last = 1
                                                         didcry = 30
                                                         prevr = rm2.x
                                                         prevl = lm2.x
@@ -110,7 +113,9 @@ with mp_face_detection.FaceDetection(
                                                 # print(prevr,rm2.x)
                                                 if abs(prevr2 - rm2.z) > 0.008:
                                                     if abs(prevl2 - lm2.z) > 0.008:
+                                                        didnya = 30
                                                         print("nya nya")
+                                                        last = 2
                                                         prevr2 = rm2.x
                                                         prevl2 = lm2.x
 
@@ -119,6 +124,7 @@ with mp_face_detection.FaceDetection(
 
     ##67 stuff lol
     didcry = didcry -1
+    didnya = didnya -1
     did67 = did67 -1
     if results.multi_hand_landmarks and results.multi_handedness:
         for hand_landmarks, handedness in zip(
@@ -133,18 +139,12 @@ with mp_face_detection.FaceDetection(
                 if prev ==-1:
                     prev = lm67.y
                 if prev != -1:
-                    print(did67)
                     if abs(lm67.y - prev) > 0.05:
                         #print ("right", rm.y, "left",lm.y)
                         if abs(rm67.y - lm67.y) > 0.05:
                             print("SIX SEVEN")
+                            last = 3
                             did67 = 20
-                        #exit()
-                    else:
-                        if did67 >0:
-                            print("SIX SEVEN")
-                        #else :
-                           #print("no")
                     prev = lm67.y
 
                 #print(f"Landmark: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
@@ -162,12 +162,10 @@ with mp_face_detection.FaceDetection(
             mp_drawing.draw_detection(image, detection)
 
 
-    # Flip the image horizontally for a selfie-view display.
-    if did67 >0:
+    if did67 >0 and last ==3:
         image_height, image_width, _ = image.shape
         cx, cy = int(rm67.x * image_width), int(rm67.y * image_height)
         cy -= 300
-        # make a small temporary image for text
         text = "6"
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 6.0
@@ -175,14 +173,9 @@ with mp_face_detection.FaceDetection(
 
         (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
         temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
-
-        # draw normal text on temp
         cv2.putText(temp, text, (5, text_h + 2), font, scale, (255, 0, 0), thickness)
-
-        # flip the text horizontally
         temp_flipped = cv2.flip(temp, 1)
 
-        # overlay flipped text on the main image
         x1 = max(cx - text_w // 2, 0)
         y1 = max(cy - text_h // 2, 0)
         x2 = min(x1 + temp_flipped.shape[1], image_width)
@@ -198,7 +191,7 @@ with mp_face_detection.FaceDetection(
         image_height, image_width, _ = image.shape
         cx, cy = int(lm67.x * image_width), int(lm67.y * image_height)
         cy -= 300
-        # make a small temporary image for text
+
         text = "7"
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 6.0
@@ -207,13 +200,9 @@ with mp_face_detection.FaceDetection(
         (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
         temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
 
-        # draw normal text on temp
         cv2.putText(temp, text, (5, text_h + 2), font, scale, (255, 0, 0), thickness)
-
-        # flip the text horizontally
         temp_flipped = cv2.flip(temp, 1)
 
-        # overlay flipped text on the main image
         x1 = max(cx - text_w // 2, 0)
         y1 = max(cy - text_h // 2, 0)
         x2 = min(x1 + temp_flipped.shape[1], image_width)
@@ -226,50 +215,68 @@ with mp_face_detection.FaceDetection(
             roi, 1, temp_flipped[:roi_h, :roi_w], 1, 0
         )
 
-    if didcry >0:
+    if didcry >0 and last == 1:
         if results2.detections:
             ih, iw, _ = image.shape
             for detection in results2.detections:
                 keypoints = detection.location_data.relative_keypoints
-
-                # Example: use keypoint 0 (right eye); change to 2 for nose tip, etc.
                 kp = keypoints[2]
                 cx, cy = int(kp.x * iw), int(kp.y * ih)
 
-                # Raise the emoji a bit (move up)
-                cy -= 0  # tweak this value to taste
-
-                # Load emoji with alpha channel
                 emoji = cv2.imread("crying_emoji.png", cv2.IMREAD_UNCHANGED)
-                if emoji is None or emoji.shape[2] != 4:
-                    raise RuntimeError("crying_emoji.png not found or missing alpha (needs RGBA)")
 
-                # Size of the emoji on-screen (px)
-                size = 250  # try 64–96
+                size = 250
                 emoji = cv2.resize(emoji, (size, size), interpolation=cv2.INTER_AREA)
 
-                # Flip the emoji CONTENT horizontally (not the position)
                 emoji = cv2.flip(emoji, 1)
 
                 h, w = emoji.shape[:2]
 
-                # Compute overlay box centered at (cx, cy), with bounds checking
                 x1 = max(cx - w // 2, 0)
                 y1 = max(cy - h // 2, 0)
                 x2 = min(x1 + w, iw)
                 y2 = min(y1 + h, ih)
 
-                # Clip emoji if it goes out of frame
                 emo_roi = emoji[:(y2 - y1), :(x2 - x1)]
                 if emo_roi.size == 0:
                     continue
 
-                # Alpha blend onto the frame
                 bgr_roi = image[y1:y2, x1:x2]
                 alpha = emo_roi[:, :, 3:4] / 255.0  # (H,W,1)
                 color = emo_roi[:, :, :3]  # (H,W,3)
                 bgr_roi[:] = (bgr_roi * (1 - alpha) + color * alpha).astype(np.uint8)
-        print ("blah")
+
+    if didnya >0 and last == 2:
+        if results2.detections:
+            ih, iw, _ = image.shape
+            for detection in results2.detections:
+                keypoints = detection.location_data.relative_keypoints
+
+                kp = keypoints[4]
+                cx, cy = int(kp.x * iw), int(kp.y * ih)
+
+                cy -= 180  #height
+                emoji = cv2.imread("anger.png", cv2.IMREAD_UNCHANGED)
+
+                #size
+                size = 170
+                emoji = cv2.resize(emoji, (size, size), interpolation=cv2.INTER_AREA)
+                emoji = cv2.flip(emoji, 1)
+                h, w = emoji.shape[:2]
+
+                x1 = max(cx - w // 2, 0)
+                y1 = max(cy - h // 2, 0)
+                x2 = min(x1 + w, iw)
+                y2 = min(y1 + h, ih)
+
+                emo_roi = emoji[:(y2 - y1), :(x2 - x1)]
+                if emo_roi.size == 0:
+                    continue
+
+                bgr_roi = image[y1:y2, x1:x2]
+                alpha = emo_roi[:, :, 3:4] / 255.0  # (H,W,1)
+                color = emo_roi[:, :, :3]  # (H,W,3)
+                bgr_roi[:] = (bgr_roi * (1 - alpha) + color * alpha).astype(np.uint8)
 
 
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
