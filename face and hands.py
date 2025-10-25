@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
@@ -11,6 +12,7 @@ prevr = -1
 prevl = -1
 prevr2 = -1
 prevl2 = -1
+did67 = -1
 lm1 = lm2 = lm3 = lm4 = None
 rm1 = rm2 = rm3 = rm4 = None
 
@@ -114,33 +116,33 @@ with mp_face_detection.FaceDetection(
 
 
     ##67 stuff lol
-    did67 = 1
+    did67 = did67 -1
     if results.multi_hand_landmarks and results.multi_handedness:
         for hand_landmarks, handedness in zip(
                 results.multi_hand_landmarks, results.multi_handedness):
             #did67 = did67 - 1
             if handedness.classification[0].label == "Right":
-                rm = hand_landmarks.landmark[9]
+                rm67 = hand_landmarks.landmark[9]
             # Check for right hand
             if handedness.classification[0].label == "Left":
                 #print("Right hand landmarks:")
-                lm = hand_landmarks.landmark[9]
+                lm67 = hand_landmarks.landmark[9]
                 if prev ==-1:
-                    prev = lm.y
+                    prev = lm67.y
                 if prev != -1:
-                    if abs(lm.y - prev) > 0.05:
+                    print(did67)
+                    if abs(lm67.y - prev) > 0.05:
                         #print ("right", rm.y, "left",lm.y)
-                        if abs(rm.y - lm.y) > 0.05:
+                        if abs(rm67.y - lm67.y) > 0.05:
                             print("SIX SEVEN")
-
-                            did67 = 40
+                            did67 = 20
                         #exit()
                     else:
                         if did67 >0:
                             print("SIX SEVEN")
                         #else :
                            #print("no")
-                    prev = lm.y
+                    prev = lm67.y
 
                 #print(f"Landmark: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
     if results.multi_hand_landmarks:
@@ -151,23 +153,76 @@ with mp_face_detection.FaceDetection(
             mp_hands.HAND_CONNECTIONS,
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
-    if did67 >= 0:
-        image_height, image_width, _ = image.shape
-        cx, cy = int(rm.x * image_width), int(rm.y * image_height)
-        cv2.circle(image, (cx, cy), 5, (0, 255, 0), -1)
-        cv2.putText(
-            image,
-            f"67",  # text
-            (cx + 10, cy - 10),  # position offset from point
-            cv2.FONT_HERSHEY_SIMPLEX,
-            10,  # font scale
-            (255, 0, 0),  # color (B, G, R)
-            2  # thickness
-        )
+
     if results2.detections:
         for detection in results2.detections:
             mp_drawing.draw_detection(image, detection)
+
+
     # Flip the image horizontally for a selfie-view display.
+    if did67 >0:
+        image_height, image_width, _ = image.shape
+        cx, cy = int(rm67.x * image_width), int(rm67.y * image_height)
+        cy -= 300
+        # make a small temporary image for text
+        text = "6"
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        scale = 6.0
+        thickness = 5
+
+        (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
+        temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
+
+        # draw normal text on temp
+        cv2.putText(temp, text, (5, text_h + 2), font, scale, (255, 0, 0), thickness)
+
+        # flip the text horizontally
+        temp_flipped = cv2.flip(temp, 1)
+
+        # overlay flipped text on the main image
+        x1 = max(cx - text_w // 2, 0)
+        y1 = max(cy - text_h // 2, 0)
+        x2 = min(x1 + temp_flipped.shape[1], image_width)
+        y2 = min(y1 + temp_flipped.shape[0], image_height)
+
+        roi = image[y1:y2, x1:x2]
+        roi_h, roi_w = roi.shape[:2]
+
+        image[y1:y1 + roi_h, x1:x1 + roi_w] = cv2.addWeighted(
+            roi, 1, temp_flipped[:roi_h, :roi_w], 1, 0
+        )
+        #other hand
+        image_height, image_width, _ = image.shape
+        cx, cy = int(lm67.x * image_width), int(lm67.y * image_height)
+        cy -= 300
+        # make a small temporary image for text
+        text = "7"
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        scale = 6.0
+        thickness = 5
+
+        (text_w, text_h), _ = cv2.getTextSize(text, font, scale, thickness)
+        temp = np.zeros((text_h + 10, text_w + 10, 3), dtype=np.uint8)
+
+        # draw normal text on temp
+        cv2.putText(temp, text, (5, text_h + 2), font, scale, (255, 0, 0), thickness)
+
+        # flip the text horizontally
+        temp_flipped = cv2.flip(temp, 1)
+
+        # overlay flipped text on the main image
+        x1 = max(cx - text_w // 2, 0)
+        y1 = max(cy - text_h // 2, 0)
+        x2 = min(x1 + temp_flipped.shape[1], image_width)
+        y2 = min(y1 + temp_flipped.shape[0], image_height)
+
+        roi = image[y1:y2, x1:x2]
+        roi_h, roi_w = roi.shape[:2]
+
+        image[y1:y1 + roi_h, x1:x1 + roi_w] = cv2.addWeighted(
+            roi, 1, temp_flipped[:roi_h, :roi_w], 1, 0
+        )
+
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     if cv2.waitKey(5) & 0xFF == 27:
       break
