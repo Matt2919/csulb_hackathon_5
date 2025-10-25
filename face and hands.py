@@ -100,12 +100,12 @@ with mp_face_detection.FaceDetection(
                                         if abs(lm3.z - lm4.z) < 0.008:
                                             # print("similar")
                                             if prevr == -1:
-                                                prevr2 = rm2.x
-                                                prevl2 = lm2.x
+                                                prevr2 = rm2.z
+                                                prevl2 = lm2.z
                                             else:
                                                 # print(prevr,rm2.x)
-                                                if abs(prevr2 - rm2.x) > 0.008:
-                                                    if abs(prevl2 - lm2.x) > 0.008:
+                                                if abs(prevr2 - rm2.z) > 0.008:
+                                                    if abs(prevl2 - lm2.z) > 0.008:
                                                         print("nya nya")
                                                         prevr2 = rm2.x
                                                         prevl2 = lm2.x
