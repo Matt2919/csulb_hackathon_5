@@ -148,18 +148,20 @@ with mp_face_detection.FaceDetection(
                     prev = lm67.y
 
                 #print(f"Landmark: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
-    if results.multi_hand_landmarks:
-      for hand_landmarks in results.multi_hand_landmarks:
-        mp_drawing.draw_landmarks(
-            image,
-            hand_landmarks,
-            mp_hands.HAND_CONNECTIONS,
-            mp_drawing_styles.get_default_hand_landmarks_style(),
-            mp_drawing_styles.get_default_hand_connections_style())
 
-    if results2.detections:
-        for detection in results2.detections:
-            mp_drawing.draw_detection(image, detection)
+    #uncomment all of this if you want to see the wireframe stuff
+    #if results.multi_hand_landmarks:
+     # for hand_landmarks in results.multi_hand_landmarks:
+      #  mp_drawing.draw_landmarks(
+       #     image,
+        #    hand_landmarks,
+         #   mp_hands.HAND_CONNECTIONS,
+          #  mp_drawing_styles.get_default_hand_landmarks_style(),
+           # mp_drawing_styles.get_default_hand_connections_style())
+
+   # if results2.detections:
+    #    for detection in results2.detections:
+     #       mp_drawing.draw_detection(image, detection)
 
 
     if did67 >0 and last ==3:
