@@ -6,16 +6,16 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 mp_face_detection = mp.solutions.face_detection
 
+import time
+
+# Helper function to log gestures to a text file
+def log_gesture(text):
+    print(text)
+    with open("gestures.txt", "a", encoding="utf-8") as f:
+        f.write(text + "\n")
+
 ##stuff for cry cry and nya nya
-prev = -1
-prevr = -1
-prevl = -1
-prevr2 = -1
-prevl2 = -1
-did67 = -1
-didcry = -1
-didnya = -1
-last = -1
+prev = prevr = prevl = prevr2 = prevl2 = did67 = didcry = didnya = last = -1
 lm1 = lm2 = lm3 = lm4 = None
 rm1 = rm2 = rm3 = rm4 = None
 
@@ -76,7 +76,7 @@ with mp_face_detection.FaceDetection(
                                                 #print(prevr,rm2.x)
                                                 if abs(prevr - rm2.x) > 0.007:
                                                     if abs(prevl - lm2.x) > 0.007:
-                                                        print("Cry cry")
+                                                        log_gesture("Cry Cry")
                                                         last = 1
                                                         didcry = 30
                                                         prevr = rm2.x
@@ -114,7 +114,7 @@ with mp_face_detection.FaceDetection(
                                                 if abs(prevr2 - rm2.z) > 0.007:
                                                     if abs(prevl2 - lm2.z) > 0.007:
                                                         didnya = 30
-                                                        print("nya nya")
+                                                        log_gesture("Nya Nya")
                                                         last = 2
                                                         prevr2 = rm2.x
                                                         prevl2 = lm2.x
@@ -145,7 +145,7 @@ with mp_face_detection.FaceDetection(
                     if abs(lm67.y - prev) > 0.05:
                         #print ("right", rm.y, "left",lm.y)
                         if abs(rm67.y - lm67.y) > 0.05:
-                            print("SIX SEVEN")
+                            log_gesture("SIX SEVEN")
                             last = 3
                             did67 = 20
                     prev = lm67.y
@@ -287,4 +287,5 @@ with mp_face_detection.FaceDetection(
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     if cv2.waitKey(5) & 0xFF == 27:
       break
+open("gestures.txt", "w").close()
 cap.release()
