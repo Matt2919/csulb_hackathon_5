@@ -126,6 +126,9 @@ with mp_face_detection.FaceDetection(
     didcry = didcry -1
     didnya = didnya -1
     did67 = did67 -1
+
+    #someone should add a checker to make sure that the hand is flat
+    #so check the same joints as nya nya
     if results.multi_hand_landmarks and results.multi_handedness:
         for hand_landmarks, handedness in zip(
                 results.multi_hand_landmarks, results.multi_handedness):
