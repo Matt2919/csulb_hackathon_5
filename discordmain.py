@@ -18,8 +18,8 @@ previous_length = 0
 
 @bot.event
 async def on_ready():
-    print(f"✅ Logged in as {bot.user}")
-    print(f"👀 Watching: {GESTURE_FILE}")
+    print(f"Logged in as {bot.user}")
+    print(f"Watching: {GESTURE_FILE}")
     watch_gestures.start()
 
 
@@ -28,7 +28,7 @@ async def watch_gestures():
     global previous_length
 
     if not os.path.exists(GESTURE_FILE):
-        print(f"⚠️ gestures.txt not found at: {GESTURE_FILE}")
+        print(f"gestures.txt not found at: {GESTURE_FILE}")
         return
 
     with open(GESTURE_FILE, "r") as f:
@@ -40,13 +40,13 @@ async def watch_gestures():
 
         channel = bot.get_channel(CHANNEL_ID)
         if not channel:
-            print("⚠️ Channel not found. Check channel ID or permissions.")
+            print("Channel not found. Check channel ID or permissions.")
             return
 
         for gesture in new_lines:
-            print(f"📄 New gesture detected: {gesture}")
+            print(f"New gesture detected: {gesture}")
             await channel.send(f"Gesture detected: **{gesture}**")
 
 
-print("Token loaded:", bool(TOKEN))  # check if token is read
+print("Token loaded:", bool(TOKEN)) 
 bot.run(TOKEN)
